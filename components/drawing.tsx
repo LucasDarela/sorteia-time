@@ -4,6 +4,13 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export default function Drawing() {
   const [playerText, setPlayerText] = useState("");
@@ -11,6 +18,7 @@ export default function Drawing() {
   const [teamBName, setTeamBName] = useState("Azul");
   const [teamA, setTeamA] = useState<string[]>([]);
   const [teamB, setTeamB] = useState<string[]>([]);
+  const [open, setOpen] = useState(false);
 
   const parsePlayers = (): string[] => {
     return playerText
@@ -25,6 +33,7 @@ export default function Drawing() {
     const half = Math.ceil(shuffled.length / 2);
     setTeamA(shuffled.slice(0, half));
     setTeamB(shuffled.slice(half));
+    setOpen(true); 
   };
 
   return (
@@ -58,29 +67,39 @@ export default function Drawing() {
         Sortear Times
       </Button>
       </div>
-      {teamA.length > 0 && teamB.length > 0 && (
-        <div className="grid grid-cols-2 gap-6 pl-10">
-          <div>
-            <h3 className="text-lg font-semibold mb-2">{teamAName}</h3>
-            <ul className="list-disc list-inside">
-              {teamA.map((name, i) => (
-                <li key={i}>{name}</li>
-              ))}
-            </ul>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Times Sorteados</DialogTitle>
+          </DialogHeader>
+
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <h3 className="text-lg font-semibold mb-2">{teamAName}</h3>
+              <ul className="list-disc list-inside">
+                {teamA.map((name, i) => (
+                  <li key={i}>{name}</li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-2">{teamBName}</h3>
+              <ul className="list-disc list-inside">
+                {teamB.map((name, i) => (
+                  <li key={i}>{name}</li>
+                ))}
+              </ul>
+            </div>
           </div>
-          <div>
-            <h3 className="text-lg font-semibold mb-2">{teamBName}</h3>
-            <ul className="list-disc list-inside">
-              {teamB.map((name, i) => (
-                <li key={i}>{name}</li>
-              ))}
-            </ul>
+
+          <div className="w-full text-center mt-4">
+            <Button onClick={shuffleTeams} variant="outline">
+              Sortear Novamente
+            </Button>
           </div>
-        </div>
-      )}
+        </DialogContent>
+      </Dialog>
     </main>
     
   );
 }
-
-
